@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="词义">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex,nofollow">
+<title>词义 · 中文查字查词</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Ctext x='32' y='45' font-size='36' font-family='serif' fill='%23fff' text-anchor='middle'%3E%E8%AF%8D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+  <section id="searchView" class="view">
+    <div class="search-inner">
+      <header class="app-head">
+        <h1 class="app-title">词义</h1>
+        <p class="app-sub">手写 · 拼音 · 中文释义</p>
+      </header>
+
+      <section class="search" aria-label="查字查词">
+        <div class="searchbar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M20 20l-3.5-3.5"></path>
+          </svg>
+          <input id="q" type="text" inputmode="search" enterkeyhint="search"
+                 autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
+                 placeholder="输入汉字或拼音…" aria-label="输入汉字或拼音">
+          <button id="clear" type="button" aria-label="清空">×</button>
+          <button id="goBtn" class="gobtn" type="button">查询</button>
+        </div>
+      </section>
+
+      <section class="hand-card" aria-label="手写查字查词">
+        <div class="hand-head">
+          <span class="hand-title">手写查字查词</span>
+          <span class="hand-hint">每个格子写一个字</span>
+        </div>
+        <div class="hand-grid-wrap">
+          <div id="handGrid" class="hand-grid" aria-label="手写田字格"></div>
+        </div>
+        <div class="hand-actions">
+          <button id="padUndo" class="ghostbtn" type="button">撤销</button>
+          <button id="padClear" class="ghostbtn" type="button">清空</button>
+          <button id="padQuery" class="gobtn" type="button">查询手写</button>
+        </div>
+        <div id="padStatus" class="pad-status" role="status"></div>
+        <p class="hand-note">4 排小格子，空着的格子会跳过；写词或成语可以接着写后面的格子。</p>
+      </section>
+
+      <p id="loadNote" class="load-note">词库加载中…首次打开约 14MB，请稍等。</p>
+
+      <div id="history" class="history" hidden>
+        <span>最近</span>
+        <span id="historyList" class="chips"></span>
+      </div>
+      <p id="loadNote" class="load-note">词库加载中…</p>
+    </div>
+  </section>
+
+  <section id="resultView" class="view" hidden>
+    <div class="result-head">
+      <button id="resultBack" class="backbtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+        <span>返回</span>
+      </button>
+    </div>
+    <div id="result" class="result" aria-live="polite"></div>
+  </section>
+
+  <footer>词典：chinese-xinhua · chinese-dictionary（MIT）· 手写识别：HanziLookup</footer>
+</main>
+
+<script src="data.js"></script>
+<script src="vendor/hanzi-data.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
