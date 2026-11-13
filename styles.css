@@ -91,6 +91,29 @@ main{
   background:var(--surface2);overflow:hidden;touch-action:none;
 }
 .hand-cell.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+/* 手写区禁止长按选中，避免 iPad 弹出“拷贝/查询/翻译”菜单 */
+.hand-card,
+.hand-head,
+.hand-grid,
+.hand-cell,
+.cell-canvas,
+.cell-clear,
+.hand-actions,
+.hand-note{
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  user-select:none;
+}
+.hand-cell.unrecognized{
+  border-color:#d93025;
+  box-shadow:0 0 0 2px rgba(217,48,37,.18), inset 0 0 0 1px rgba(217,48,37,.55);
+}
+.hand-cell.unrecognized::after{
+  content:"没认出来";
+  position:absolute;left:6px;bottom:6px;z-index:4;
+  background:#d93025;color:#fff;font-size:10px;line-height:1;
+  padding:3px 5px;border-radius:999px;pointer-events:none;
+}
 .cell-guide{
   position:absolute;inset:0;width:100%;height:100%;
   color:var(--muted);opacity:.35;pointer-events:none;
