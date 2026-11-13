@@ -586,6 +586,17 @@ function setPadStatus(text, isError) {
   padStatus.classList.toggle('err', !!isError);
 }
 
+function clearCellMarks() {
+  cells.forEach((st) => st.el.classList.remove('unrecognized'));
+}
+
+function markUnrecognized(indices) {
+  clearCellMarks();
+  indices.forEach((i) => {
+    if (cells[i]) cells[i].el.classList.add('unrecognized');
+  });
+}
+
 function createCells() {
   handGrid.replaceChildren();
   cells.length = 0;
@@ -681,6 +692,7 @@ function clearCell(i) {
   st.current = null;
   st.drawing = false;
   st.el.classList.remove('active');
+  st.el.classList.remove('unrecognized');
   drawCell(st);
   updateCellClear(st);
   strokeHistory = strokeHistory.filter((x) => x !== i);
@@ -694,6 +706,7 @@ function cellPos(st, ev) {
 
 function onCellDown(i, ev) {
   const st = cells[i];
+  st.el.classList.remove('unrecognized');
   if (st.current) return;
   if (ev.pointerType === 'touch' && ev.isPrimary === false) return;
   ev.preventDefault();
@@ -740,6 +753,7 @@ function undoStroke() {
   const i = strokeHistory.pop();
   if (i == null) return;
   const st = cells[i];
+  st.el.classList.remove('unrecognized');
   if (st.strokes.length) st.strokes.pop();
   st.current = null;
   st.drawing = false;
@@ -754,6 +768,7 @@ function clearCells() {
     st.current = null;
     st.drawing = false;
     st.el.classList.remove('active');
+    st.el.classList.remove('unrecognized');
     drawCell(st);
     updateCellClear(st);
   });
@@ -783,6 +798,7 @@ function recognizeCells() {
     return;
   }
   setPadStatus('识别中…');
+  clearCellMarks();
   padQuery.disabled = true;
   const matchOne = (points) => new Promise((resolve) => {
     try {
@@ -793,11 +809,18 @@ function recognizeCells() {
   });
   Promise.all(occupied.map((o) => matchOne(o.st.strokes))).then((results) => {
     const groups = results.map(cellCandidates);
-    if (groups.some((g) => !g.length)) {
-      setPadStatus('有一个格子没认出来，再写一次。', true);
+    const missing = [];
+    groups.forEach((g, idx) => {
+      if (!g.length) missing.push(occupied[idx].i);
+    });
+    if (missing.length) {
+      markUnrecognized(missing);
+      const where = missing.map((i) => '第 ' + (i + 1) + ' 格').join('、');
+      setPadStatus(where + '没认出来。红框里的字重写一下，再点“查询手写”。', true);
       padQuery.disabled = false;
       return;
     }
+    clearCellMarks();
     let word = groups.map((g) => g.find((ch) => charIndex.has(ch)) || g[0]).join('');
     let entry = lookupDirect(word);
     let correction = null;
@@ -921,6 +944,14 @@ resultBack.addEventListener('click', showSearchView);
 padUndo.addEventListener('click', undoStroke);
 padClear.addEventListener('click', clearCells);
 padQuery.addEventListener('click', recognizeCells);
+
+/* 手写区禁止长按选中，避免 iPad 弹出系统菜单 */
+const handCardEl = document.querySelector('.hand-card');
+if (handCardEl) {
+  ['contextmenu', 'selectstart', 'dragstart'].forEach((evt) => {
+    handCardEl.addEventListener(evt, (e) => e.preventDefault());
+  });
+}
 
 /* ---------- 启动 ---------- */
 loadNote.textContent = '';
