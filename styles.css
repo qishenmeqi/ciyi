@@ -83,11 +83,11 @@ main{
 .hand-hint{font-size:12px;color:var(--muted)}
 .hand-grid-wrap{width:100%}
 .hand-grid{
-  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
-  width:min(100%,540px);margin:0 auto;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+  width:min(100%,460px);margin:0 auto;
 }
 .hand-cell{
-  position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:9px;
+  position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:14px;
   background:var(--surface2);overflow:hidden;touch-action:none;
 }
 .hand-cell.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}

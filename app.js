@@ -572,7 +572,7 @@ function renderNotFound(q, recognition) {
 
 /* ---------- 手写 ---------- */
 let matcher = null;
-const CELL_COUNT = 20;
+const CELL_COUNT = 4;
 const cells = [];
 let strokeHistory = [];
 let activeCell = -1;
@@ -642,7 +642,7 @@ function resizeCells() {
     st.canvas.width = Math.round(w * dpr);
     st.canvas.height = Math.round(h * dpr);
     st.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    st.ctx.lineWidth = 5;
+    st.ctx.lineWidth = 7;
     st.ctx.lineCap = 'round';
     st.ctx.lineJoin = 'round';
     drawCell(st);
