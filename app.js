@@ -251,17 +251,25 @@ if (synth) {
   loadVoices();
   if (typeof synth.addEventListener === 'function') synth.addEventListener('voiceschanged', loadVoices);
   else synth.onvoiceschanged = loadVoices;
+  // iOS 上先在第一次触摸时解锁语音引擎、加载中文语音
+  document.addEventListener('pointerdown', () => {
+    loadVoices();
+    try { if (synth.paused) synth.resume(); } catch (e) {}
+  }, { once: true, passive: true });
 }
 function speak(text) {
-  if (!synth) return;
+  if (!synth || !text) return;
   try {
-    synth.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    if (synth.speaking || synth.pending) synth.cancel();
+    if (synth.paused) synth.resume();
+    const u = new SpeechSynthesisUtterance(String(text));
     u.lang = 'zh-CN';
     u.rate = 0.82;
+    u.pitch = 1;
+    u.volume = 1;
     if (!voices.length) loadVoices();
-    const pick = voices.find((v) => /^zh/i.test(v.lang) && v.localService) ||
-                 voices.find((v) => /^zh/i.test(v.lang));
+    const zh = voices.filter((v) => /^zh/i.test(v.lang));
+    const pick = zh.find((v) => v.localService) || zh[0];
     if (pick) u.voice = pick;
     synth.speak(u);
   } catch (e) {}
@@ -269,12 +277,14 @@ function speak(text) {
 
 function speakerRow(text) {
   const row = el('div', 'spkrow');
+  row.appendChild(el('span', 'read-label', '读音'));
   const b = el('button', 'spk');
   b.type = 'button';
-  b.setAttribute('aria-label', '读这个词');
-  b.innerHTML = SPEAKER_SVG + '<span>读</span>';
+  b.setAttribute('aria-label', '播放读音');
+  b.innerHTML = SPEAKER_SVG + '<span>读一遍</span>';
   b.addEventListener('click', () => speak(text));
   row.appendChild(b);
+  row.appendChild(el('span', 'read-note', '切换词后自动读'));
   return row;
 }
 
@@ -455,6 +465,7 @@ function showDetail(entry, opts) {
   resultEl.appendChild(card);
   addHistory(entry.word);
   showResultView();
+  if (opts.autoRead !== false) speak(entry.word);
 }
 
 function recogBlock(groups, word) {
