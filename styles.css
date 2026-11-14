@@ -183,6 +183,8 @@ main{
   background:var(--accent-soft);border-radius:999px;padding:4px 9px;vertical-align:middle;
 }
 .spkrow{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.read-label{font-size:13px;color:var(--muted);letter-spacing:.08em}
+.read-note{font-size:12px;color:var(--muted)}
 .spk{
   display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:9px 17px;
   border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);
@@ -191,6 +193,10 @@ main{
 .spk svg{width:18px;height:18px;flex:none}
 .spk:hover{background:var(--accent-soft);border-color:transparent}
 .spk:active{background:var(--accent);border-color:var(--accent);color:var(--card)}
+.spkrow .spk{
+  background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600;
+}
+.spkrow .spk:active{background:var(--accent);color:var(--card)}
 .definition{
   margin-top:20px;padding-top:18px;border-top:1px solid var(--line);
   font-size:19px;line-height:1.85;white-space:pre-wrap;word-break:break-word;
