@@ -257,6 +257,15 @@ if (synth) {
     try { if (synth.paused) synth.resume(); } catch (e) {}
   }, { once: true, passive: true });
 }
+function pickMandarinVoice() {
+  const zh = voices.filter((v) => /^zh/i.test(v.lang));
+  const first = (list) => list.find((v) => v.localService) || list[0] || null;
+  const cn = zh.filter((v) => /^zh[-_]CN$/i.test(v.lang));
+  const sg = zh.filter((v) => /^zh[-_]SG$/i.test(v.lang));
+  const tw = zh.filter((v) => /^zh[-_]TW$/i.test(v.lang));
+  const other = zh.filter((v) => !/^zh[-_](HK|MO)$/i.test(v.lang) && !/^yue/i.test(v.lang));
+  return first(cn) || first(sg) || first(tw) || first(other) || null;
+}
 function speak(text) {
   if (!synth || !text) return;
   try {
@@ -268,8 +277,7 @@ function speak(text) {
     u.pitch = 1;
     u.volume = 1;
     if (!voices.length) loadVoices();
-    const zh = voices.filter((v) => /^zh/i.test(v.lang));
-    const pick = zh.find((v) => v.localService) || zh[0];
+    const pick = pickMandarinVoice();
     if (pick) u.voice = pick;
     synth.speak(u);
   } catch (e) {}
@@ -975,6 +983,7 @@ toggleClear();
 showSearchView();
 
 window.__cnDebug = {
+  pickMandarinVoice: pickMandarinVoice,
   cells: cells,
   findOneCharDiff: findOneCharDiff,
   lookupDirect: lookupDirect,
